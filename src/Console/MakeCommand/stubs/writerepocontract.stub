@@ -1,0 +1,9 @@
+<?php
+
+namespace {{ namespace }};
+
+use CircleLinkHealth\ReposModelsGenerator\Contracts\WriteRepo;
+
+interface {{ class }} extends WriteRepo
+{
+}

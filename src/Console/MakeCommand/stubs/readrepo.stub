@@ -1,0 +1,15 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ contractNamespace }};
+use {{ modelNamespace }};
+use CircleLinkHealth\ReposModelsGenerator\Repositories\Read\Repository as BaseReadRepo;
+
+class {{ class }} extends BaseReadRepo implements {{ contract }}
+{
+    protected function model(): {{ model }}
+    {
+        return new {{ model }};
+    }
+}

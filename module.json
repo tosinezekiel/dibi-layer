@@ -1,0 +1,13 @@
+{
+    "name": "ReposModelsGenerator",
+    "alias": "repomodel",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\ReposModelsGenerator\\Providers\\ReposModelsGeneratorServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

@@ -1,0 +1,15 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ contractNamespace }};
+use {{ modelNamespace }};
+use CircleLinkHealth\ReposModelsGenerator\Repositories\Write\Repository as BaseWriteRepo;
+
+class {{ class }} extends BaseWriteRepo implements {{ contract }}
+{
+    protected function model(): {{ model }}
+    {
+        return new {{ model }};
+    }
+}

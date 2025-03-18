@@ -1,0 +1,34 @@
+{
+    "name": "tosin/repo-db-layer",
+    "description": "This package contains commands that generate repositories and models",
+    "authors": [
+        {
+            "name": "Tosin Ezekiel",
+            "email": "tosinezekiel1@gmail.com"
+        }
+    ],
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Dibi\\ReposModelsGenerator\\Providers\\ReposModelsGeneratorServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Dibi\\ReposModelsGenerator\\": "src/"
+        },
+        "files": [
+          "helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Dibi\\ReposModelsGenerator\\Tests\\": "tests/"
+        }
+    }
+}

@@ -1,0 +1,11 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ modelNamespace }};
+use CircleLinkHealth\ReposModelsGenerator\Contracts\ReadRepo;
+
+interface {{ class }} extends ReadRepo
+{
+
+}
