@@ -2,7 +2,7 @@
 
 namespace {{ namespace }};
 
-use CircleLinkHealth\ReposModelsGenerator\Contracts\WriteRepo;
+use Dibi\ReposModelsGenerator\Contracts\WriteRepo;
 
 interface {{ class }} extends WriteRepo
 {

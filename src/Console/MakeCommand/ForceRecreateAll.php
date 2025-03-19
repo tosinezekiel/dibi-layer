@@ -1,11 +1,11 @@
 <?php
 
-namespace CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand;
+namespace Dibi\ReposModelsGenerator\Console\MakeCommand;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
-use CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand\Concerns\CallsMakeCommands;
-use CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand\Concerns\InteractsWithRepoClasses;
+use Dibi\ReposModelsGenerator\Console\MakeCommand\Concerns\CallsMakeCommands;
+use Dibi\ReposModelsGenerator\Console\MakeCommand\Concerns\InteractsWithRepoClasses;
 
 class ForceRecreateAll extends Command
 {

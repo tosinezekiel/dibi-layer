@@ -1,11 +1,11 @@
 <?php
 
-namespace CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand;
+namespace Dibi\ReposModelsGenerator\Console\MakeCommand;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand\Concerns\InteractsWithRepoClasses;
+use Dibi\ReposModelsGenerator\Console\MakeCommand\Concerns\InteractsWithRepoClasses;
 
 class ServiceProvider extends BaseMake
 {

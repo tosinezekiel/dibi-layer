@@ -4,7 +4,7 @@ namespace {{ namespace }};
 
 use {{ contractNamespace }};
 use {{ modelNamespace }};
-use CircleLinkHealth\ReposModelsGenerator\Repositories\Read\Repository as BaseReadRepo;
+use Dibi\ReposModelsGenerator\Repositories\Read\Repository as BaseReadRepo;
 
 class {{ class }} extends BaseReadRepo implements {{ contract }}
 {

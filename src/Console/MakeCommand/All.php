@@ -1,9 +1,9 @@
 <?php
 
-namespace CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand;
+namespace Dibi\ReposModelsGenerator\Console\MakeCommand;
 
 use Illuminate\Console\Command;
-use CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand\Concerns\CallsMakeCommands;
+use Dibi\ReposModelsGenerator\Console\MakeCommand\Concerns\CallsMakeCommands;
 
 class All extends Command
 {

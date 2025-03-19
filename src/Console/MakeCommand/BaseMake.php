@@ -1,10 +1,10 @@
 <?php
 
-namespace CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand;
+namespace Dibi\ReposModelsGenerator\Console\MakeCommand;
 
 use Illuminate\Console\Concerns\CreatesMatchingTest;
 use Illuminate\Console\GeneratorCommand;
-use CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand\Concerns\CallsMakeCommands;
+use Dibi\ReposModelsGenerator\Console\MakeCommand\Concerns\CallsMakeCommands;
 use Symfony\Component\Console\Input\InputOption;
 
 abstract class BaseMake extends GeneratorCommand

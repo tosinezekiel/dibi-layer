@@ -1,6 +1,6 @@
 <?php
 
-namespace CircleLinkHealth\ReposModelsGenerator\Models;
+namespace Dibi\ReposModelsGenerator\Models;
 
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 

@@ -3,7 +3,7 @@
 namespace {{ namespace }};
 
 use {{ modelNamespace }};
-use CircleLinkHealth\ReposModelsGenerator\Contracts\ReadRepo;
+use Dibi\ReposModelsGenerator\Contracts\ReadRepo;
 
 interface {{ class }} extends ReadRepo
 {
