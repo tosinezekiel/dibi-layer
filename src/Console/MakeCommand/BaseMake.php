@@ -1,10 +1,10 @@
 <?php
 
-namespace CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand;
+namespace Dibi\ReposModelsGenerator\Console\MakeCommand;
 
 use Illuminate\Console\Concerns\CreatesMatchingTest;
 use Illuminate\Console\GeneratorCommand;
-use CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand\Concerns\CallsMakeCommands;
+use Dibi\ReposModelsGenerator\Console\MakeCommand\Concerns\CallsMakeCommands;
 use Symfony\Component\Console\Input\InputOption;
 
 abstract class BaseMake extends GeneratorCommand
@@ -51,33 +51,34 @@ abstract class BaseMake extends GeneratorCommand
 
     protected function getReadContractFQN(string $name)
     {
-        return config('repomodel.paths.read.contract_namespace').'\\'.$name;
+        return 'App\\Domain\\' . $this->argument('domain') . '\\' . config('repomodel.paths.read.contract_namespace').'\\'.$name;
     }
 
     protected function getReadNamespaceForDriver(string $driver)
     {
-        return config('repomodel.paths.read.namespace').'\\'.config("repomodel.drivers.$driver.dir");
+        return 'App\\Domain\\' . $this->argument('domain') . '\\' . config('repomodel.paths.read.namespace').'\\'.config("repomodel.drivers.$driver.dir");
     }
 
     protected function getWriteContractFQN(string $name)
     {
-        return config('repomodel.paths.write.contract_namespace').'\\'.$name;
+        return 'App\\Domain\\' . $this->argument('domain') . '\\' . config('repomodel.paths.write.contract_namespace').'\\'.$name;
     }
 
     protected function getWriteNamespaceForDriver(string $driver)
     {
-        return config('repomodel.paths.write.namespace').'\\'.config("repomodel.drivers.$driver.dir");
+        return 'App\\Domain\\' . $this->argument('domain') . '\\' . config('repomodel.paths.write.namespace').'\\'.config("repomodel.drivers.$driver.dir");
     }
 
     protected function replaceModel(string $stub)
     {
         $name  = $this->getNameInput();
-        $model = config('repomodel.paths.models.namespace').'\\'.$name;
+        $domain  = $this->argument('domain');
+        $model = 'App\\Domain\\' . $domain . '\\' .config('repomodel.paths.models.namespace').'\\'.$name;
         $alias = $name.'Model';
 
         if ( ! class_exists($model)) {
             $this->warn("Creating [$model].");
-            $this->createModel($name);
+            $this->createModel($domain, $name);
             $this->line("Created [$model].");
         }
 

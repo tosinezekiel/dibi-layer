@@ -1,9 +1,9 @@
 <?php
 
-namespace CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand\Concerns;
+namespace Dibi\ReposModelsGenerator\Console\MakeCommand\Concerns;
 
-use CircleLinkHealth\ReposModelsGenerator\Contracts\ReadRepo;
-use CircleLinkHealth\ReposModelsGenerator\Contracts\WriteRepo;
+use Dibi\ReposModelsGenerator\Contracts\ReadRepo;
+use Dibi\ReposModelsGenerator\Contracts\WriteRepo;
 
 trait InteractsWithRepoClasses
 {

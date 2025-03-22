@@ -1,11 +1,11 @@
 <?php
 
-namespace CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand;
+namespace Dibi\ReposModelsGenerator\Console\MakeCommand;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand\Concerns\InteractsWithRepoClasses;
+use Dibi\ReposModelsGenerator\Console\MakeCommand\Concerns\InteractsWithRepoClasses;
 
 class ServiceProvider extends BaseMake
 {
@@ -32,8 +32,8 @@ class ServiceProvider extends BaseMake
      */
     public function handle()
     {
-        $class     = config('repomodel.paths.provider.namespace');
-        $path      = config('repomodel.paths.provider.path');
+        $class     = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\' . config('repomodel.paths.provider.namespace');
+        $path      = app_path('Domain/' . $this->argument('domain') . '/Providers');
         $name      = class_basename($class);
         $classPath = $path."/$name.php";
 
@@ -64,40 +64,44 @@ class ServiceProvider extends BaseMake
     {
         $bindings = [];
 
-        $read           = config('repomodel.paths.read.namespace');
-        $readContracts  = config('repomodel.paths.read.contract_namespace');
-        $write          = config('repomodel.paths.write.namespace');
-        $writeContracts = config('repomodel.paths.write.contract_namespace');
+        $read           = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\' . config('repomodel.paths.read.namespace');
+        $readContracts  = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\' . config('repomodel.paths.read.contract_namespace');
+        $write          = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\' . config('repomodel.paths.write.namespace');
+        $writeContracts = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\' . config('repomodel.paths.write.contract_namespace');
 
-        foreach (scandir(config('repomodel.paths.read.contract_path')) as $contract) {
-            if ( ! Str::endsWith($contract, '.php')) {
-                continue;
-            }
-            $contract = $readContracts.'\\'.str_replace('.php', '', $contract);
-            if ( ! $this->implementsReadRepo($contract)) {
-                continue;
-            }
+        foreach (scandir(config('repomodel.paths.domain.path')) as $domain) {
+            foreach (app_path($domain . 'Contracts/Repositories/Read')  as $contract) {
+                if (!Str::endsWith($contract, '.php')) {
+                    continue;
+                }
+                $contract = $readContracts . '\\' . str_replace('.php', '', $contract);
+                if (!$this->implementsReadRepo($contract)) {
+                    continue;
+                }
 
-            $repo = "$read\\MySql\\".class_basename($contract);
+                $repo = "$read\\MySql\\" . class_basename($contract);
 
-            if (class_exists($repo)) {
-                $bindings[$contract] = $repo;
+                if (class_exists($repo)) {
+                    $bindings[$contract] = $repo;
+                }
             }
         }
 
-        foreach (scandir(config('repomodel.paths.write.contract_path')) as $contract) {
-            if ( ! Str::endsWith($contract, '.php')) {
-                continue;
-            }
-            $contract = $writeContracts.'\\'.str_replace('.php', '', $contract);
-            if ( ! $this->implementsWriteRepo($contract)) {
-                continue;
-            }
+        foreach (scandir(config('repomodel.paths.domain.path')) as $domain) {
+            foreach (app_path($domain . 'Contracts/Repositories/Write') as $contract) {
+                if (!Str::endsWith($contract, '.php')) {
+                    continue;
+                }
+                $contract = $writeContracts . '\\' . str_replace('.php', '', $contract);
+                if (!$this->implementsWriteRepo($contract)) {
+                    continue;
+                }
 
-            $repo = "$write\\MySql\\".class_basename($contract);
+                $repo = "$write\\MySql\\" . class_basename($contract);
 
-            if (class_exists($repo)) {
-                $bindings[$contract] = $repo;
+                if (class_exists($repo)) {
+                    $bindings[$contract] = $repo;
+                }
             }
         }
 

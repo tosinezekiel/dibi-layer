@@ -1,9 +1,9 @@
 <?php
 
-namespace CircleLinkHealth\ReposModelsGenerator\Repositories\Read;
+namespace Dibi\ReposModelsGenerator\Repositories\Read;
 
 use Illuminate\Support\Collection;
-use CircleLinkHealth\ReposModelsGenerator\Contracts\ReadRepo;
+use Dibi\ReposModelsGenerator\Contracts\ReadRepo;
 
 /**
  * @template-covariant A

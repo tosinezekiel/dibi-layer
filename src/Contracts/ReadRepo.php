@@ -1,6 +1,6 @@
 <?php
 
-namespace CircleLinkHealth\ReposModelsGenerator\Contracts;
+namespace Dibi\ReposModelsGenerator\Contracts;
 
 use Illuminate\Support\Collection;
 

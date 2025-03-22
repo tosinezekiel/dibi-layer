@@ -1,9 +1,9 @@
 <?php
 
-namespace CircleLinkHealth\ReposModelsGenerator\Repositories\Write;
+namespace Dibi\ReposModelsGenerator\Repositories\Write;
 
 use Illuminate\Database\Eloquent\Builder;
-use CircleLinkHealth\ReposModelsGenerator\Contracts\WriteRepo;
+use Dibi\ReposModelsGenerator\Contracts\WriteRepo;
 
 abstract class Repository implements WriteRepo
 {

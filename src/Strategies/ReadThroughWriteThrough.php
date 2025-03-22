@@ -1,6 +1,6 @@
 <?php
 
-namespace CircleLinkHealth\ReposModelsGenerator\Strategies;
+namespace Dibi\ReposModelsGenerator\Strategies;
 
 class ReadThroughWriteThrough
 {

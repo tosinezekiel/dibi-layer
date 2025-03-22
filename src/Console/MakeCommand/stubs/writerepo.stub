@@ -4,7 +4,7 @@ namespace {{ namespace }};
 
 use {{ contractNamespace }};
 use {{ modelNamespace }};
-use CircleLinkHealth\ReposModelsGenerator\Repositories\Write\Repository as BaseWriteRepo;
+use Dibi\ReposModelsGenerator\Repositories\Write\Repository as BaseWriteRepo;
 
 class {{ class }} extends BaseWriteRepo implements {{ contract }}
 {

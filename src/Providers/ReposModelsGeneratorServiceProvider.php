@@ -1,17 +1,16 @@
 <?php
 
-namespace CircleLinkHealth\ReposModelsGenerator\Providers;
+namespace Dibi\ReposModelsGenerator\Providers;
 
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
-use CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand\All;
-use CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand\ForceRecreateAll;
-use CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand\Model;
-use CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand\ReadRepoContract;
-use CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand\ReadRepos;
-use CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand\ServiceProvider as RepoServiceProvider;
-use CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand\WriteRepoContract;
-use CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand\WriteRepos;
+use Dibi\ReposModelsGenerator\Console\MakeCommand\All;
+use Dibi\ReposModelsGenerator\Console\MakeCommand\Model;
+use Dibi\ReposModelsGenerator\Console\MakeCommand\ReadRepoContract;
+use Dibi\ReposModelsGenerator\Console\MakeCommand\ReadRepos;
+use Dibi\ReposModelsGenerator\Console\MakeCommand\ServiceProvider as RepoServiceProvider;
+use Dibi\ReposModelsGenerator\Console\MakeCommand\WriteRepoContract;
+use Dibi\ReposModelsGenerator\Console\MakeCommand\WriteRepos;
 
 class ReposModelsGeneratorServiceProvider extends ServiceProvider implements DeferrableProvider
 {
@@ -32,7 +31,6 @@ class ReposModelsGeneratorServiceProvider extends ServiceProvider implements Def
         Model::class,
         ReadRepos::class,
         WriteRepos::class,
-        ForceRecreateAll::class,
         RepoServiceProvider::class,
     ];
 

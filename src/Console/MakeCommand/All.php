@@ -1,9 +1,9 @@
 <?php
 
-namespace CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand;
+namespace Dibi\ReposModelsGenerator\Console\MakeCommand;
 
 use Illuminate\Console\Command;
-use CircleLinkHealth\ReposModelsGenerator\Console\MakeCommand\Concerns\CallsMakeCommands;
+use Dibi\ReposModelsGenerator\Console\MakeCommand\Concerns\CallsMakeCommands;
 
 class All extends Command
 {
@@ -21,7 +21,7 @@ class All extends Command
      *
      * @var string
      */
-    protected $signature = 'make:repos {name} {--force=0}';
+    protected $signature = 'make:repos {domain} {name} {--force=0}';
 
     /**
      * Execute the console command.
@@ -31,12 +31,13 @@ class All extends Command
     public function handle()
     {
         $force = (bool) $this->option('force');
+        $domain  = (string) $this->argument('domain');
         $name  = (string) $this->argument('name');
 
-        $this->createModel($name, $force);
-        $this->createReadRepoContract($name, $force);
-        $this->createWriteRepoContract($name, $force);
-        $this->createReadRepos($name, $force);
-        $this->createWriteRepos($name, $force);
+        $this->createModel($domain, $name, $force);
+        $this->createReadRepoContract($domain, $name, $force);
+        $this->createWriteRepoContract($domain, $name, $force);
+        $this->createReadRepos($domain, $name, $force);
+        $this->createWriteRepos($domain, $name, $force);
     }
 }
