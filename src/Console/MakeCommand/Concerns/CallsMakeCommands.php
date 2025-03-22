@@ -6,83 +6,92 @@ use Illuminate\Support\Facades\Artisan;
 
 trait CallsMakeCommands
 {
-    public function createModel(string $name, bool $force = false)
+    public function createModel(string $domain, string $name, bool $force = false)
     {
-        $this->preRun($command = 'make:model', $name, $force);
+        $this->preRun($command = 'make:model', $name, $domain, $force);
+        Artisan::call(
+            $command,
+            [
+                'name'    => 'Domain/' . $domain . '/Models/' . $name,
+                '--force' => $force,
+            ]
+        );
+        $this->postRun($command = 'make:model', $name, $domain, $force);
+    }
+
+    public function createReadRepoContract(string $domain, string $name, bool $force = false)
+    {
+        $this->preRun($command = 'make:readrepocontract', $name, $domain, $force);
         Artisan::call(
             $command,
             [
                 'name'    => $name,
+                'domain'    => $domain,
                 '--force' => $force,
             ]
         );
-        $this->postRun($command = 'make:model', $name, $force);
+        $this->postRun($command = 'make:readrepocontract', $name, $domain, $force);
     }
 
-    public function createReadRepoContract(string $name, bool $force = false)
+    public function createReadRepos(string $domain, string $name, bool $force = false)
     {
-        $this->preRun($command = 'make:readrepocontract', $name, $force);
+        $this->preRun($command = 'make:readrepos', $name, $domain, $force);
         Artisan::call(
             $command,
             [
                 'name'    => $name,
+                'domain'    => $domain,
                 '--force' => $force,
             ]
         );
-        $this->postRun($command = 'make:readrepocontract', $name, $force);
+        $this->postRun($command = 'make:readrepos', $name, $domain, $force);
     }
 
-    public function createReadRepos(string $name, bool $force = false)
+    public function createWriteRepoContract(string $domain, string $name, bool $force = false)
     {
-        $this->preRun($command = 'make:readrepos', $name, $force);
+        $this->preRun($command = 'make:writerepocontract', $name, $domain, $force);
         Artisan::call(
             $command,
             [
                 'name'    => $name,
+                'domain'    => $domain,
                 '--force' => $force,
             ]
         );
-        $this->postRun($command = 'make:readrepos', $name, $force);
+        $this->postRun($command = 'make:writerepocontract', $name, $domain, $force);
     }
 
-    public function createWriteRepoContract(string $name, bool $force = false)
+    public function createWriteRepos(string $domain, string $name, bool $force = false)
     {
-        $this->preRun($command = 'make:writerepocontract', $name, $force);
+        $this->preRun($command = 'make:writerepos', $name, $domain, $force);
         Artisan::call(
             $command,
             [
                 'name'    => $name,
+                'domain'    => $domain,
                 '--force' => $force,
             ]
         );
-        $this->postRun($command = 'make:writerepocontract', $name, $force);
+        $this->postRun($command = 'make:writerepos', $name, $domain, $force);
     }
 
-    public function createWriteRepos(string $name, bool $force = false)
+    public function generateServiceProvider(string $domain)
     {
-        $this->preRun($command = 'make:writerepos', $name, $force);
-        Artisan::call(
-            $command,
+        Artisan::call('repo:provider',
             [
-                'name'    => $name,
-                '--force' => $force,
+                'domain' => $domain,
             ]
+
         );
-        $this->postRun($command = 'make:writerepos', $name, $force);
     }
 
-    public function generateServiceProvider()
+    private function postRun(string $command, string $name, string $domain, bool $force)
     {
-        Artisan::call('repo:provider');
+        $this->info("Finish `php artisan $command $name in $domain --force=$force`");
     }
 
-    private function postRun(string $command, string $name, bool $force)
+    private function preRun(string $command, string $name, string $domain, bool $force)
     {
-        $this->info("Finish `php artisan $command $name --force=$force`");
-    }
-
-    private function preRun(string $command, string $name, bool $force)
-    {
-        $this->warn("Start `php artisan $command $name --force=$force`");
+        $this->warn("Start `php artisan $command $name in $domain --force=$force`");
     }
 }

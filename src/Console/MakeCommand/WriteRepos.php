@@ -89,11 +89,11 @@ class WriteRepos extends BaseMake
     protected function replaceContract($stub)
     {
         $name     = $this->getNameInput();
-        $contract = config('repomodel.paths.write.contract_namespace').'\\'.$name;
+        $contract = 'App\\Domain\\' . $this->argument('domain') . '\\' . config('repomodel.paths.write.contract_namespace').'\\'.$name;
 
         if ( ! interface_exists($contract)) {
             $this->warn("Creating [$contract]");
-            $this->createWriteRepoContract($this->argument('name'), $this->option('force'));
+            $this->createWriteRepoContract($this->argument('domain'), $this->argument('name'), $this->option('force'));
             $this->line("Created [$contract]");
         }
 

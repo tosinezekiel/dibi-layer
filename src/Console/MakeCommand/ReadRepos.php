@@ -93,7 +93,7 @@ class ReadRepos extends BaseMake
 
         if ( ! interface_exists($contract)) {
             $this->warn("Creating [$contract] does not exist.");
-            $this->createReadRepoContract($this->argument('name'), $this->option('force'));
+            $this->createReadRepoContract($this->argument('domain'), $this->argument('name'), $this->option('force'));
             $this->line("Created [$contract] does not exist.");
         }
 

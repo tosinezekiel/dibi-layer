@@ -5,7 +5,6 @@ namespace Dibi\ReposModelsGenerator\Providers;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 use Dibi\ReposModelsGenerator\Console\MakeCommand\All;
-use Dibi\ReposModelsGenerator\Console\MakeCommand\ForceRecreateAll;
 use Dibi\ReposModelsGenerator\Console\MakeCommand\Model;
 use Dibi\ReposModelsGenerator\Console\MakeCommand\ReadRepoContract;
 use Dibi\ReposModelsGenerator\Console\MakeCommand\ReadRepos;
@@ -32,7 +31,6 @@ class ReposModelsGeneratorServiceProvider extends ServiceProvider implements Def
         Model::class,
         ReadRepos::class,
         WriteRepos::class,
-        ForceRecreateAll::class,
         RepoServiceProvider::class,
     ];
 
