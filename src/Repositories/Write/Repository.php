@@ -7,16 +7,16 @@ use Dibi\ReposModelsGenerator\Contracts\WriteRepo;
 
 abstract class Repository implements WriteRepo
 {
-    const ID_FIELD = 'id';
+    const ID_FIELD = 'uuid';
 
     public function create(array $args)
     {
         return $this->model()->create($args);
     }
 
-    public function delete(int $id): bool
+    public function delete(string $uuid): bool
     {
-        return $this->model()->where('id', '=', $id)->delete();
+        return $this->model()->where('uuid', '=', $uuid)->delete();
     }
 
     public function deleteBy(array $where): bool
@@ -34,9 +34,9 @@ abstract class Repository implements WriteRepo
         return $this->model()->insertGetId($args);
     }
 
-    public function update(int $id, array $args): bool
+    public function update(string $uuid, array $args): bool
     {
-        return $this->model()->where('id', '=', $id)->update($args);
+        return $this->model()->where('uuid', '=', $uuid)->update($args);
     }
 
     public function updateBy(array $where, array $args): bool

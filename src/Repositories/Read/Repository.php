@@ -11,7 +11,7 @@ use Dibi\ReposModelsGenerator\Contracts\ReadRepo;
  */
 abstract class Repository implements ReadRepo
 {
-    const ID_FIELD = 'id';
+    const ID_FIELD = 'uuid';
 
     public function __construct(private $repo = null)
     {
@@ -36,12 +36,12 @@ abstract class Repository implements ReadRepo
         return $this->model()->where($field, '=', $value)->first();
     }
 
-    public function findById(int $id)
+    public function findById(string $id)
     {
         return $this->findBy(self::ID_FIELD, $id);
     }
 
-    public function findByIdOrFail(int $id)
+    public function findByIdOrFail(string $id)
     {
         return $this->findByOrFail(self::ID_FIELD, $id);
     }
@@ -79,7 +79,7 @@ abstract class Repository implements ReadRepo
         return $this->model()->where($args)->get($columns);
     }
 
-    public function query(array $args, array $columns = ['*']): Builder
+    public function query(): Builder
     {
         return $this->model()->query();
     }
