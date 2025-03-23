@@ -58,4 +58,6 @@ abstract class Repository implements WriteRepo
     {
         return $this->model()->upsert($args, $uniqueColumns);
     }
+
+    abstract protected function model();
 }

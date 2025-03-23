@@ -19,12 +19,12 @@ abstract class BaseMake extends GeneratorCommand
 
     protected function getAbstractReadRepoFQN(string $name)
     {
-        return config('repomodel.paths.read.namespace').'\\'.$name;
+        return 'App\\Domain\\' . $this->argument('domain') . '\\' . config('repomodel.paths.read.namespace').'\\'.$name;
     }
 
     protected function getAbstractWriteRepoFQN(string $name)
     {
-        return config('repomodel.paths.write.namespace').'\\'.$name;
+        return 'App\\Domain\\' . $this->argument('domain') . '\\' .  config('repomodel.paths.write.namespace').'\\'.$name;
     }
 
     /**

@@ -15,7 +15,7 @@ class ReadRepos extends BaseMake
      *
      * @var string
      */
-    protected $name = 'make:readrepos';
+    protected $signature = 'make:readrepos {domain} {name} {--force=0}';
 
     /**
      * The type of class being generated.

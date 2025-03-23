@@ -15,7 +15,7 @@ class ReadRepoContract extends BaseMake
      *
      * @var string
      */
-    protected $name = 'make:readrepocontract';
+    protected $signature = 'make:readrepocontract {domain} {name} {--force=0}';
 
     /**
      * The type of class being generated.
@@ -32,7 +32,7 @@ class ReadRepoContract extends BaseMake
     public function handle()
     {
         if (false === parent::handle() && ! $this->option('force')) {
-            return false;
+            return 1;
         }
     }
 
@@ -54,9 +54,9 @@ class ReadRepoContract extends BaseMake
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return is_dir(config('repomodel.paths.read.contract_path'))
-        ? config('repomodel.paths.read.contract_namespace')
-        : $rootNamespace;
+        return is_dir('App\\Domain\\' . $this->argument('domain') . '\\' . config('repomodel.paths.read.contract_path'))
+            ? 'App\\Domain\\' . $this->argument('domain') . '\\' . config('repomodel.paths.read.contract_namespace')
+            : $rootNamespace . '\\Domain\\' . $this->argument('domain') . '\\' . config('repomodel.paths.read.contract_namespace');
     }
 
     /**

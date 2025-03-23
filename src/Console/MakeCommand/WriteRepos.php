@@ -15,7 +15,7 @@ class WriteRepos extends BaseMake
      *
      * @var string
      */
-    protected $name = 'make:writerepos';
+    protected $signature = 'make:writerepos {domain} {name} {--force=0}';
 
     /**
      * The type of class being generated.

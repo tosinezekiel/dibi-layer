@@ -3,6 +3,7 @@
 namespace Dibi\ReposModelsGenerator\Repositories\Read;
 
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
 use Dibi\ReposModelsGenerator\Contracts\ReadRepo;
 
 /**
@@ -76,6 +77,11 @@ abstract class Repository implements ReadRepo
     public function getBy(array $args, array $columns = ['*']): Collection
     {
         return $this->model()->where($args)->get($columns);
+    }
+
+    public function query(array $args, array $columns = ['*']): Builder
+    {
+        return $this->model()->query();
     }
 
     abstract protected function model();

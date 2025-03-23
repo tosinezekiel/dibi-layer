@@ -15,7 +15,7 @@ class WriteRepoContract extends BaseMake
      *
      * @var string
      */
-    protected $name = 'make:writerepocontract';
+    protected $signature = 'make:writerepocontract {domain} {name} {--force=0}';
 
     /**
      * The type of class being generated.
@@ -32,7 +32,7 @@ class WriteRepoContract extends BaseMake
     public function handle()
     {
         if (false === parent::handle() && ! $this->option('force')) {
-            return false;
+            return 1;
         }
     }
 
@@ -44,7 +44,9 @@ class WriteRepoContract extends BaseMake
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return is_dir(config('repomodel.paths.write.contract_path')) ? config('repomodel.paths.write.contract_namespace') : $rootNamespace;
+        return is_dir('App\\Domain\\' . $this->argument('domain') . '\\' . config('repomodel.paths.write.contract_path'))
+            ? 'App\\Domain\\' . $this->argument('domain') . '\\' . config('repomodel.paths.write.contract_namespace')
+            : $rootNamespace . '\\Domain\\' . $this->argument('domain') . '\\' . config('repomodel.paths.write.contract_namespace');
     }
 
     /**
