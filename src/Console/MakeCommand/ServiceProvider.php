@@ -32,7 +32,7 @@ class ServiceProvider extends BaseMake
      */
     public function handle()
     {
-        $class     = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\' . config('repomodel.paths.provider.namespace');
+        $class     = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\Providers\\RepositoryServiceProvider';
         $path      = app_path('Domain/' . $this->argument('domain') . '/Providers');
         $name      = class_basename($class);
         $classPath = $path."/$name.php";
@@ -43,6 +43,10 @@ class ServiceProvider extends BaseMake
             File::delete($classPath);
         }
 
+        if (!File::exists($path)) {
+            File::makeDirectory($path, 0755, true);
+        }
+
         Artisan::call(
             'make:provider',
             [
@@ -50,7 +54,11 @@ class ServiceProvider extends BaseMake
             ]
         );
 
-        file_put_contents($classPath, Str::replaceFirst('{', $this->bindingsVar(), file_get_contents($classPath)));
+        if (file_exists($classPath)) {
+            file_put_contents($classPath, Str::replaceFirst('{', $this->bindingsVar(), file_get_contents($classPath)));
+        } else {
+            $this->error("Failed to generate [$class]");
+        }
 
         $this->line("Generated [$class]");
     }
@@ -64,13 +72,13 @@ class ServiceProvider extends BaseMake
     {
         $bindings = [];
 
-        $read           = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\' . config('repomodel.paths.read.namespace');
-        $readContracts  = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\' . config('repomodel.paths.read.contract_namespace');
-        $write          = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\' . config('repomodel.paths.write.namespace');
-        $writeContracts = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\' . config('repomodel.paths.write.contract_namespace');
+        $read           = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\Repositories\\Read';
+        $readContracts  = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\Contracts\\Repositories\\Read';
+        $write          = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\Repositories\\Write';
+        $writeContracts = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\Contracts\\Repositories\\Write';
 
         foreach (scandir(config('repomodel.paths.domain.path')) as $domain) {
-            foreach (app_path($domain . 'Contracts/Repositories/Read')  as $contract) {
+            foreach (scandir(app_path($domain . 'Contracts/Repositories/Read'))  as $contract) {
                 if (!Str::endsWith($contract, '.php')) {
                     continue;
                 }
@@ -88,7 +96,7 @@ class ServiceProvider extends BaseMake
         }
 
         foreach (scandir(config('repomodel.paths.domain.path')) as $domain) {
-            foreach (app_path($domain . 'Contracts/Repositories/Write') as $contract) {
+            foreach (scandir(app_path($domain . 'Contracts/Repositories/Write')) as $contract) {
                 if (!Str::endsWith($contract, '.php')) {
                     continue;
                 }
