@@ -2,113 +2,130 @@
 
 namespace Dibi\ReposModelsGenerator\Console\MakeCommand;
 
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Dibi\ReposModelsGenerator\Console\MakeCommand\Concerns\InteractsWithRepoClasses;
+use Illuminate\Support\Facades\Log;
 
 class ServiceProvider extends BaseMake
 {
-    use InteractsWithRepoClasses;
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Generate the service provider';
-
-    /**
-     * The console command name.
-     *
-     * @var string
-     */
+    protected $description = 'Generate a repository service provider for all domains';
     protected $signature = 'repo:provider';
 
-    /**
-     * Execute the console command.
-     *
-     * @return void
-     */
     public function handle()
     {
-        $class     = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\Providers\\RepositoryServiceProvider';
-        $path      = app_path('Domain/' . $this->argument('domain') . '/Providers');
-        $name      = class_basename($class);
-        $classPath = $path."/$name.php";
+        $domains = $this->getAllDomains();
 
-        $this->warn("Generating [$class]");
-
-        if (file_exists($classPath)) {
-            File::delete($classPath);
+        if (empty($domains)) {
+            $this->error("No domains found in app/Domain.");
+            return;
         }
 
-        if (!File::exists($path)) {
-            File::makeDirectory($path, 0755, true);
+        $this->info("Found domains: " . implode(", ", $domains));
+        $this->generateGlobalProvider($domains);
+    }
+
+    private function generateGlobalProvider(array $domains)
+    {
+        $namespace = config('repomodel.paths.domain.namespace') . "\\Providers";
+        $providerClass = "RepositoryServiceProvider";
+        $providerPath = app_path("Domain/Providers");
+        $providerFile = "$providerPath/$providerClass.php";
+
+        $this->warn("Generating [$namespace\\$providerClass]");
+
+        if (!File::exists($providerPath)) {
+            File::makeDirectory($providerPath, 0755, true);
         }
 
-        Artisan::call(
-            'make:provider',
-            [
-                'name' => $class,
-            ]
+
+        $bindings = $this->collectBindings($domains);
+
+        $stub = file_get_contents($this->getStub());
+        $content = Str::replace(
+            ['{{ namespace }}', '{{ class }}', '{{ bindings }}'],
+            [$namespace, $providerClass, $this->formatBindings($bindings)],
+            $stub
         );
 
-        if (file_exists($classPath)) {
-            file_put_contents($classPath, Str::replaceFirst('{', $this->bindingsVar(), file_get_contents($classPath)));
-        } else {
-            $this->error("Failed to generate [$class]");
+        file_put_contents($providerFile, $content);
+
+        $this->info("Generated [$namespace\\$providerClass]");
+
+        $this->updateBootstrapFile();
+    }
+
+    private function formatBindings(array $bindings)
+    {
+        if (empty($bindings)) {
+            return '';
         }
 
-        $this->line("Generated [$class]");
+        $output = '';
+        foreach ($bindings as $contract => $implementation) {
+            $output .= "\t\t\\$contract::class => \\$implementation::class," . PHP_EOL;
+        }
+
+        return $output;
     }
 
-    protected function getStub()
+    private function collectBindings(array $domains)
     {
-        return $this->resolveStubPath('/stubs/provider.stub');
+        $allBindings = [];
+
+        foreach ($domains as $domain) {
+            $bindings = $this->bindings($domain);
+            $allBindings = array_merge($allBindings, $bindings);
+        }
+
+        return $allBindings;
     }
 
-    private function bindings()
+
+    private function bindings($domain)
     {
         $bindings = [];
+        $baseNamespace = config('repomodel.paths.domain.namespace') . "\\$domain";
 
-        $read           = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\Repositories\\Read';
-        $readContracts  = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\Contracts\\Repositories\\Read';
-        $write          = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\Repositories\\Write';
-        $writeContracts = config('repomodel.paths.domain.namespace') . '\\' . $this->argument('domain') . '\\Contracts\\Repositories\\Write';
+        $paths = [
+            'Read' => [
+                'contracts' => "$baseNamespace\\Contracts\\Repositories\\Read",
+                'contractPath' => app_path("Domain/$domain/Contracts/Repositories/Read"),
+                'implPath' => app_path("Domain/$domain/Repositories/Read/MySql"),
+                'implNamespace' => "$baseNamespace\\Repositories\\Read\\MySql",
+            ],
+            'Write' => [
+                'contracts' => "$baseNamespace\\Contracts\\Repositories\\Write",
+                'contractPath' => app_path("Domain/$domain/Contracts/Repositories/Write"),
+                'implPath' => app_path("Domain/$domain/Repositories/Write/MySql"),
+                'implNamespace' => "$baseNamespace\\Repositories\\Write\\MySql",
+            ],
+        ];
 
-        foreach (scandir(config('repomodel.paths.domain.path')) as $domain) {
-            foreach (scandir(app_path($domain . 'Contracts/Repositories/Read'))  as $contract) {
-                if (!Str::endsWith($contract, '.php')) {
-                    continue;
-                }
-                $contract = $readContracts . '\\' . str_replace('.php', '', $contract);
-                if (!$this->implementsReadRepo($contract)) {
-                    continue;
-                }
-
-                $repo = "$read\\MySql\\" . class_basename($contract);
-
-                if (class_exists($repo)) {
-                    $bindings[$contract] = $repo;
-                }
+        foreach ($paths as $type => $config) {
+            if (!File::exists($config['contractPath'])) {
+                continue;
             }
-        }
 
-        foreach (scandir(config('repomodel.paths.domain.path')) as $domain) {
-            foreach (scandir(app_path($domain . 'Contracts/Repositories/Write')) as $contract) {
-                if (!Str::endsWith($contract, '.php')) {
-                    continue;
-                }
-                $contract = $writeContracts . '\\' . str_replace('.php', '', $contract);
-                if (!$this->implementsWriteRepo($contract)) {
-                    continue;
-                }
+            $phpFiles = glob($config['contractPath'] . '/*.php');
 
-                $repo = "$write\\MySql\\" . class_basename($contract);
+            $files = [];
 
-                if (class_exists($repo)) {
-                    $bindings[$contract] = $repo;
+            if (!empty($phpFiles)) {
+                $files = array_map('basename', $phpFiles);
+            }
+
+            foreach ($files as $file) {
+                $contractName = pathinfo($file, PATHINFO_FILENAME);
+                $contract = $config['contracts'] . '\\' . $contractName;
+                $implFile = $config['implPath'] . '/' . $file;
+                $implClass = $config['implNamespace'] . '\\' . $contractName;
+
+                if (File::exists($implFile)) {
+                    $contractExists = class_exists($contract) || interface_exists($contract);
+                    $implExists = class_exists($implClass);
+                    if ($contractExists && $implExists) {
+                        $bindings[$contract] = $implClass;
+                    }
                 }
             }
         }
@@ -116,16 +133,67 @@ class ServiceProvider extends BaseMake
         return $bindings;
     }
 
-    private function bindingsVar()
+    private function getAllDomains()
     {
-        $output = '{'.PHP_EOL."\t".'public array $bindings = ['.PHP_EOL;
-
-        foreach ($this->bindings() as $contract => $binding) {
-            $output .= "\t\t\\$contract::class => \\$binding::class,".PHP_EOL;
+        $domainPath = app_path('Domain');
+        if (!File::exists($domainPath)) {
+            return [];
         }
 
-        $output .= "\t".'];'.PHP_EOL;
+        return array_filter(scandir($domainPath), function ($item) use ($domainPath) {
+            return $item !== '.' && $item !== '..' && is_dir($domainPath . '/' . $item);
+        });
+    }
 
-        return $output;
+    private function updateBootstrapFile()
+    {
+        $bootstrapFile = base_path('bootstrap/providers.php');
+        if (!File::exists($bootstrapFile)) {
+            $this->warn("Bootstrap file not found. Skipping registration.");
+            return;
+        }
+
+        $content = file_get_contents($bootstrapFile);
+
+        $providerClass = 'App\\Domain\\Providers\\RepositoryServiceProvider::class';
+
+        if (strpos($content, $providerClass) !== false) {
+            $this->info("Provider already registered in bootstrap/providers.php");
+            return;
+        }
+
+        $pattern = '/return\s*\[\s*(.*?)\s*\]\s*;/s';
+        if (preg_match($pattern, $content, $matches)) {
+            $currentProviders = $matches[1];
+            $newProviders = $currentProviders;
+
+            if (trim($currentProviders) !== '') {
+                $newProviders = rtrim($currentProviders);
+                if (substr($newProviders, -1) !== ',') {
+                    $newProviders .= ',';
+                }
+                $newProviders .= "\n    ";
+            }
+
+            $newProviders .= $providerClass;
+
+            $newContent = str_replace(
+                $matches[0],
+                "return [\n    " . $newProviders . "\n];",
+                $content
+            );
+
+            file_put_contents($bootstrapFile, $newContent);
+            $this->info("Registered [RepositoryServiceProvider] in bootstrap/providers.php");
+        } else {
+            $newContent = "<?php\n\nreturn [\n    $providerClass\n];\n";
+            file_put_contents($bootstrapFile, $newContent);
+            $this->info("Created bootstrap/providers.php with [RepositoryServiceProvider]");
+        }
+    }
+
+    protected function getStub()
+    {
+        return __DIR__ . '/stubs/provider.stub';
     }
 }

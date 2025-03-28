@@ -75,14 +75,12 @@ trait CallsMakeCommands
         $this->postRun($command = 'make:writerepos', $name, $domain, $force);
     }
 
-    public function generateServiceProvider(string $domain)
+    public function generateServiceProvider()
     {
-        Artisan::call('repo:provider',
-            [
-                'domain' => $domain,
-            ]
-
-        );
+        $this->warn("Generating repository service provider...");
+        Artisan::call('repo:provider');
+        $output = Artisan::output();
+        $this->info($output);
     }
 
     private function postRun(string $command, string $name, string $domain, bool $force)

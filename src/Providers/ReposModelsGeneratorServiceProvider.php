@@ -70,12 +70,12 @@ class ReposModelsGeneratorServiceProvider extends ServiceProvider implements Def
     {
         $this->publishes(
             [
-                __DIR__.'/../Config/config.php' => config_path($this->moduleNameLower.'.php'),
+                __DIR__ . '/../Config/config.php' => config_path($this->moduleNameLower . '.php'),
             ],
             'config'
         );
         $this->mergeConfigFrom(
-            __DIR__.'/../Config/config.php',
+            __DIR__ . '/../Config/config.php',
             $this->moduleNameLower
         );
     }

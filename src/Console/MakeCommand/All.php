@@ -21,7 +21,7 @@ class All extends Command
      *
      * @var string
      */
-    protected $signature = 'make:repos {domain} {name} {--force=0}';
+    protected $signature = 'make:repos {domain} {name} {--force=0} {--register=1}';
 
     /**
      * Execute the console command.
@@ -31,13 +31,19 @@ class All extends Command
     public function handle()
     {
         $force = (bool) $this->option('force');
-        $domain  = (string) $this->argument('domain');
-        $name  = (string) $this->argument('name');
+        $register = (bool) $this->option('register');
+        $domain = (string) $this->argument('domain');
+        $name = (string) $this->argument('name');
 
         $this->createModel($domain, $name, $force);
         $this->createReadRepoContract($domain, $name, $force);
         $this->createWriteRepoContract($domain, $name, $force);
         $this->createReadRepos($domain, $name, $force);
         $this->createWriteRepos($domain, $name, $force);
+
+        if ($register) {
+            $this->info("Generating repository service provider...");
+            $this->call('repo:provider');
+        }
     }
 }
