@@ -6,7 +6,7 @@ interface WriteRepo
 {
     public function create(array $args);
 
-    public function delete(string $uuid): bool;
+    public function delete(int $id): bool;
 
     public function deleteBy(array $where): bool;
 
@@ -14,7 +14,7 @@ interface WriteRepo
 
     public function insertGetId(array $args): int;
 
-    public function update(string $uuid, array $args);
+    public function update(int $id, array $args);
 
     public function updateBy(array $where, array $args): bool;
 
