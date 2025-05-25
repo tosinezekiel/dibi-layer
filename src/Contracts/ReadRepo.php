@@ -3,6 +3,7 @@
 namespace Dibi\ReposModelsGenerator\Contracts;
 
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
 
 interface ReadRepo
 {
@@ -25,4 +26,6 @@ interface ReadRepo
     public function findManyBy(string $field, int|string|bool $value): Collection;
 
     public function getBy(array $args, array $columns = ['*']): Collection;
+
+    public function query(): Builder;
 }
